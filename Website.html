@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colegio de Montalban | Registrar Appointment</title>
+  <style>
+    * {margin: 0;padding: 0;box-sizing: border-box;font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;}
+    body { 
+      background: linear-gradient(135deg, #004000, #007f5f, #00b894); 
+      background-attachment: fixed; 
+      color: #fff;   
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    header { 
+      background: rgba(0,0,0,0.4); 
+      color: #fff; 
+      text-align: center; 
+      padding: 25px 15px; 
+      border-bottom: 3px solid #ffcc00; 
+      backdrop-filter: blur(10px); 
+    }
+    header img { width: 90px; display: block; margin: 0 auto 10px; }
+    header h1 { font-size: 2rem; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+    header p { font-size: 1rem; font-style: italic; opacity: 0.9; }
+    main { display: flex; justify-content: center; align-items: center; flex: 1; padding: 20px; }
+    
+    /* Form container */
+    .form-container { 
+      background: rgba(255,255,255,0.1); 
+      backdrop-filter: blur(15px); 
+      padding: 30px; 
+      border-radius: 16px; 
+      width: 100%; 
+      max-width: 650px; 
+      border: 1px solid rgba(255,255,255,0.3); 
+      color: #fff; 
+      display: none; 
+    }
+    .form-container h2 { margin-bottom: 20px; text-align: center; color: #ffcc00; font-size: 1.8rem; text-shadow: 0 0 4px rgba(255,204,0,0.6); }
+    .form-group {margin-bottom: 20px;}
+    label {display: block;font-weight: bold;margin-bottom: 6px;color: #fffae5;}
+    input, select { 
+      width: 100%; 
+      padding: 12px; 
+      border: 1px solid rgba(255,255,255,0.3); 
+      border-radius: 8px; 
+      outline: none; 
+      font-size: 0.95rem; 
+      background: rgba(0,0,0,0.7);
+      color: #fff; 
+    }
+    select option, select optgroup {
+      background: #003300;
+      color: #fff;
+      padding: 8px;
+    }
+    input:focus, select:focus { border-color: #ffcc00; box-shadow: 0 0 6px #ffcc00; }
+    
+    .options { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+      gap: 18px; 
+      margin-top: 10px; 
+    }
+    .option-card { 
+      border: 2px solid rgba(255,255,255,0.3); 
+      border-radius: 15px; 
+      padding: 25px 15px; 
+      cursor: pointer; 
+      transition: 0.3s; 
+      text-align: center; 
+      background: rgba(255,255,255,0.08); 
+      backdrop-filter: blur(12px); 
+      position: relative; 
+    }
+    .option-card input {display: none;}
+    .option-card span { font-size: 1rem; font-weight: 500; display: block; }
+    .option-card:hover { transform: translateY(-4px); border-color: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
+    .option-card:has(input:checked) { border-color: #ffcc00; box-shadow: 0 0 12px #ffcc00; background: rgba(255, 204, 0, 0.15); }
+
+    /* Buttons style */
+    button {
+      background: linear-gradient(135deg, #ffcc00, #ff9900);
+      color: #000;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: 0.3s;
+      box-shadow: 0 0 8px rgba(255,204,0,0.6);
+      margin: 5px 0;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #ffdd33, #ffaa00);
+      transform: scale(1.03);
+      box-shadow: 0 0 12px #ffcc00;
+    }
+
+    .confirmation { 
+      display: none; 
+      margin-top: 20px; 
+      padding: 15px; 
+      background: rgba(0,255,100,0.1); 
+      border: 1px solid #00ff88; 
+      color: #00ff88; 
+      border-radius: 6px; 
+      text-align: center; 
+      font-weight: bold; 
+      text-shadow: 0 0 6px #00ff88; 
+    }
+    .role-select { 
+      text-align: center; 
+      background: rgba(255,255,255,0.1); 
+      padding: 40px 30px; 
+      border-radius: 16px; 
+      backdrop-filter: blur(15px); 
+      border: 1px solid rgba(255,255,255,0.3); 
+    }
+    .role-select h2 { color: #ffcc00; margin-bottom: 25px; text-shadow: 0 0 6px rgba(255,204,0,0.7); }
+    .role-select button { width: 200px; margin: 10px; }
+
+    footer { text-align: center; padding: 12px; background: rgba(0,0,0,0.5); color: #ffcc00; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px); }
+
+    #appointmentSubOptions { display: none; margin-top: 15px; }
+
+    /* Admin dashboard styles */
+    #adminDashboard { display: none; width: 100%; max-width: 900px; margin: 0 auto; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(15px);}
+    #adminDashboard h2 { color: #ffcc00; text-align: center; margin-bottom: 20px; text-shadow: 0 0 6px rgba(255,204,0,0.7);}
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; border: 1px solid rgba(255,255,255,0.3); text-align: center; }
+    th { background: rgba(255,204,0,0.3); color: #000; }
+    td { background: rgba(0,0,0,0.5); }
+    .admin-btn { width: auto; padding: 8px 12px; margin: 3px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="c:\\Users\\DESKTOP\\Pictures\\c.png" alt="Colegio de Montalban Logo">
+    <h1>Colegio De Montalban</h1>
+    <p>Office of the Registrar - Online Appointment Request</p>
+  </header>
+
+  <main>
+    <!-- Role selection -->
+    <div class="role-select" id="roleSelect">
+      <h2>Who are you?</h2>
+      <button onclick="selectRole('Student')">Student</button>
+      <button onclick="selectRole('Admin')">Admin</button>
+    </div>
+
+    <!-- Student form -->
+    <div class="form-container" id="formContainer">
+      <h2 id="formTitle">Book an Appointment</h2>
+      <form id="appointmentForm">
+        <input type="hidden" id="role">
+        <div class="form-group">
+          <label for="name">Full Name:</label>
+          <input type="text" id="name" placeholder="Enter your full name" required pattern="^[A-Za-z\s]+$" title="Letters only">
+        </div>
+        <div class="form-group" id="studentIdGroup">
+          <label for="studentId">Student ID:</label>
+          <input type="text" id="studentId" placeholder="e.g. 2025-12345" required pattern="^[0-9\-]+$" title="Numbers and '-' only">
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address:</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="date">Preferred Date:</label>
+          <input type="date" id="date" required>
+        </div>
+        <div class="form-group">
+          <label for="course">Course:</label>
+          <select id="course" required>
+            <option value="">-- Select Course --</option>
+            <optgroup label="Institute of Computer Studies">
+              <option>BSIT - Bachelor of Science in Information Technology</option>
+              <option>BSCpE - Bachelor of Science in Computer Engineering</option>
+            </optgroup>
+            <optgroup label="Institute of Education">
+              <option>BSEd-SCI - Bachelor of Secondary Education major in Science</option>
+              <option>BEEd-GEN - Bachelor of Elementary Education (Generalist)</option>
+              <option>BEEd-ECED - Bachelor of Early Childhood Education</option>
+              <option>BTLEd-ICT - Bachelor of Technology and Livelihood Education major in ICT</option>
+              <option>TCP - Teacher Certificate Program (18 Units)</option>
+            </optgroup>
+            <optgroup label="Institute of Business">
+              <option>BSBA - Bachelor of Science in Business Administration</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Select Appointment Type (Multiple allowed):</label>
+          <div class="options">
+            <label class="option-card">
+              <input type="checkbox" id="appointmentCheckbox" name="service" value="Appointment" onchange="toggleAppointmentOptions()">
+              <span>Appointment</span>
+            </label>
+          </div>
+          <div id="appointmentSubOptions">
+            <label class="option-card">
+              <input type="checkbox" name="appointmentService" value="TOR">
+              <span>Transcript of Records (TOR)</span>
+            </label>
+            <label class="option-card">
+              <input type="checkbox" name="appointmentService" value="COE">
+              <span>Certificate of Enrollment</span>
+            </label>
+            <label class="option-card">
+              <input type="checkbox" name="appointmentService" value="SOG">
+              <span>Summary of Grades</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit">Submit Request</button>
+        <button type="button" onclick="goHome()">Home</button>
+      </form>
+      <div class="confirmation" id="confirmationMessage"></div>
+    </div>
+
+    <!-- Admin login/dashboard -->
+    <div class="form-container" id="adminLoginContainer">
+      <h2>Admin Login</h2>
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label for="adminUser">Username:</label>
+          <input type="text" id="adminUser" placeholder="Admin username" required>
+        </div>
+        <div class="form-group">
+          <label for="adminPass">Password:</label>
+          <input type="password" id="adminPass" placeholder="Password" required>
+        </div>
+        <button type="submit">Login</button>
+        <button type="button" onclick="goHome()">Home</button>
+      </form>
+    </div>
+
+    <div id="adminDashboard">
+      <h2>Admin Dashboard</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Email</th>
+            <th>Service Requested</th>
+            <th>Preferred Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="requestsTable"></tbody>
+      </table>
+      <button onclick="logoutAdmin()">Logout</button>
+    </div>
+
+  </main>
+
+  <footer>
+    © 2025 Colegio De Montalban Office of the Registrar
+  </footer>
+
+  <script>
+    const form = document.getElementById('appointmentForm');
+    const confirmation = document.getElementById('confirmationMessage');
+    const dateInput = document.getElementById('date');
+    const roleSelect = document.getElementById('roleSelect');
+    const formContainer = document.getElementById('formContainer');
+    const roleField = document.getElementById('role');
+    const studentIdGroup = document.getElementById('studentIdGroup');
+    const appointmentSubOptions = document.getElementById('appointmentSubOptions');
+    const appointmentCheckbox = document.getElementById('appointmentCheckbox');
+
+    const adminLoginContainer = document.getElementById('adminLoginContainer');
+    const adminDashboard = document.getElementById('adminDashboard');
+    const requestsTable = document.getElementById('requestsTable');
+
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("min", today);
+
+    let appointmentRequests = []; // Store requests
+
+    function selectRole(role) {
+      roleField.value = role;
+      roleSelect.style.display = "none";
+
+      if(role === "Student"){
+        formContainer.style.display = "block";
+      } else {
+        adminLoginContainer.style.display = "block";
+      }
+    }
+
+    function goHome() {
+      form.reset();
+      confirmation.style.display = 'none';
+      formContainer.style.display = "none";
+      adminLoginContainer.style.display = "none";
+      adminDashboard.style.display = "none";
+      roleSelect.style.display = "block";
+      appointmentSubOptions.style.display = "none";
+    }
+
+    function toggleAppointmentOptions() {
+      appointmentSubOptions.style.display = appointmentCheckbox.checked ? "grid" : "none";
+    }
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const studentId = document.getElementById("studentId").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const date = document.getElementById("date").value;
+      const course = document.getElementById("course").value;
+
+      const namePattern = /^[A-Za-z\s]+$/;
+      if (!namePattern.test(name)) {
+        alert("Please enter a valid full name (letters and spaces only).");
+        return;
+      }
+
+      const selectedAppointmentServices = Array.from(document.querySelectorAll('input[name="appointmentService"]:checked')).map(cb => cb.value);
+      if (selectedAppointmentServices.length === 0) {
+        alert("Please select at least one appointment type.");
+        return;
+      }
+
+      const request = { name, studentId, email, date, course, services: selectedAppointmentServices, status: "Pending", approvedDate: "" };
+      appointmentRequests.push(request);
+
+      confirmation.innerHTML = "✅ Your appointment request has been submitted!<br>" +
+        "Requested: " + selectedAppointmentServices.join(", ") + "<br>" +
+        "Please wait for confirmation from the Registrar’s Office.";
+      confirmation.style.display = 'block';
+
+      form.reset();
+      appointmentSubOptions.style.display = "none";
+    });
+
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    adminLoginForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const user = document.getElementById('adminUser').value.trim();
+      const pass = document.getElementById('adminPass').value.trim();
+
+      if(user === "admin" && pass === "password123"){
+        adminLoginContainer.style.display = "none";
+        adminDashboard.style.display = "block";
+        renderRequests();
+      } else {
+        alert("Invalid admin credentials.");
+      }
+    });
+
+    function renderRequests(){
+      requestsTable.innerHTML = "";
+      appointmentRequests.forEach((req, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${req.name}</td>
+          <td>${req.studentId}</td>
+          <td>${req.email}</td>
+          <td>${req.services.join(", ")}</td>
+          <td>${req.date}</td>
+          <td>
+            ${req.status === "Pending" ? `<button class="admin-btn" onclick="approveRequest(${index})">Approve</button>` : `Approved: ${req.approvedDate}`}
+          </td>
+        `;
+        requestsTable.appendChild(tr);
+      });
+    }
+
+    function approveRequest(index){
+      const assignedDate = prompt("Assign a date for the student to get their documents (YYYY-MM-DD):");
+      if(assignedDate){
+        appointmentRequests[index].status = "Approved";
+        appointmentRequests[index].approvedDate = assignedDate;
+        renderRequests();
+      }
+    }
+
+    function logoutAdmin(){
+      adminDashboard.style.display = "none";
+      roleSelect.style.display = "block";
+    }
+  </script>
+</body>
+</html>
